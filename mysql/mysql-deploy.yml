@@ -7,32 +7,36 @@ spec:
   selector:
     matchLabels:
       app: mysql
-    template:
-      metadata:
-        name: mysql
-        labels:
-          app: mysql
-      spec:
-        containers:
-          - image: mysql: 8.0
-            ports:
-              - containerPort: 3306
-                name: mysql
-            env:
-              - name: MYSQL_ROOT_PASSWORD
-                valueFrom:
-                  secretKeyRef:
-                    key: rootpassword
-              - name: MYSQL_USER
-                valueFrom:
-                  secretKeyRef:
-                    key: username
-              - name: MYSQL_PASSWORD
-                valueFrom:
-                  secretKeyRef:
-                    key: password
-        volumes:
-          - name: dbvol
-            persistentVolumeClaim:
-              claimName: my-aws-managed-disk 
+  template:
+    metadata:
+      name: mysql
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - image: mysql:8.0
+          name: mysql
+          ports:
+            - containerPort: 3306
+              name: mysql
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: rootpassword
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: username
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: password
+      volumes:
+      - name: dbvol
+        persistentVolumeClaim:
+          claimName: my-aws-managed-disk 
                   

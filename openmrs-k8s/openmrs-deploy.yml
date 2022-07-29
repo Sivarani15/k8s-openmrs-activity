@@ -1,0 +1,40 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: openmrs-deploy
+  labels:
+    app: openmrs
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: openmrs
+  templates:
+    metadata:
+      name: openmrs-deploy
+    spec:
+      containers:
+        - image: 003456206344.dkr.ecr.us-east-1.amazonaws.com/openmrs:1.0
+          imagePullPolicy: Always
+          name: openmrs
+          ports:
+            - containerPort: 8080
+      imagePullSecrets:
+          - name: image-pull-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openmrs-svc
+  labels:
+    app: openmrs
+spec:
+  ports:
+    - port: 8080
+  selector:
+    app: openmrs
+  type: LoadBalancer
+
+
+      
